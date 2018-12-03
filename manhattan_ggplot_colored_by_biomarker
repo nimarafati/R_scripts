@@ -1,3 +1,4 @@
+##Nima Rafati nimarafati@gmail.com
 ggplot(data = hits, aes(x = number, y = -log10(SUM_CADD_SC), fill = factor(Panel))) +
     geom_bar(stat = "identity") + 
     facet_grid(~Chr, scales = 'free_x', space = 'free_x', switch = 'x') + 
