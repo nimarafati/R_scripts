@@ -1,0 +1,59 @@
+##Julia Höglund julia.hoglund@igp.uu.se
+so the file i read in looks like this :
+
+MARKER P
+CHR color
+4E-BP1 0.00000000567571
+8 #19a46e
+ADA 4.91297E-18
+20 #d813c6
+CASP-8 0.00000000694115
+2 #d85313
+CCL11 0.00000000218838
+17 #6813d8
+etc
+
+The color code is only because i wanted to match it with the circular one later.
+This is then the code:
+
+hits <- read.csv("manhattan_all_hits.csv", header=T, sep=";")
+hits$logP <- -log10(na.omit(hits$P))
+# this can of course be done beforehand
+hits <- hits[order(hits$CHR),]
+# order by chromosome
+vector <- as.vector(hits$logP)
+# i dont remember this but it made it easier later
+names(vector) <- hits$CHR
+# (i cannot even see where i ended up using this, if at all..)
+
+ylim= max(hits$logP) + 5
+# just to make it pretty
+cols <- as.vector(hits$color)
+# these colors is the ones i wanted to match
+
+# colors are now matched with circlize
+# this is what i did before, to get a nice color scheme
+# cols <- rainbow(16, s=0.7) 
+# eller
+# col <- rand_color(n_breaks)
+# colsCHR <- col[hits$CHR]
+
+xx <- barplot(hits$logP, col=cols, axisnames=FALSE, ylim=c(0,ylim))
+# this is just because the labels are often easier to put out when having this object
+
+barplot(hits$logP, col=cols, axisnames=FALSE, ylim=c(0,ylim))
+# here comes the actual plot
+
+# denna är efter denna plot, ändras något måste denna med fixas
+# translated comment: this is based on this plot, if something changes, this have to be changed
+# i'm sure there is an easier way of doing this but the at() tells them where i want the label (i dont even know if it is pixels or what)
+# in the first c() and the labels i want is the second c() (since i dont have hits on all chromosomes)
+axis(1, at =c(0.7, 3.7, 7, 12, 16.9, 19.2, 21.1, 22.3, 24, 27, 29.5, 31.2, 36.7, 43.3, 47.5, 49.9), c(1,2,3,4,5,6,8,9,10,11,12,16,17,19,20,21), cex.axis= 0.55)
+
+abline(h=-log10(1.62e-8), col="black", lty=5)
+# i put the genomewide line with my threshold
+text(x=xx, y=hits$logP, labels=hits$MARKER, pos=3, cex=0.5)
+# here i add the marker names on top and here comes the problem
+# this one puts the name horizontally and i have no idea how i turn them vertically in R
+# ive tried this many time, never with success. if you solve it, please let me know!
+# i exported this with postscript() and turned the labels in adobe illustrator
