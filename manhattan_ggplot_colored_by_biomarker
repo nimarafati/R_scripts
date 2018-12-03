@@ -1,0 +1,23 @@
+ggplot(data = hits, aes(x = number, y = -log10(SUM_CADD_SC), fill = factor(Panel))) +
+    geom_bar(stat = "identity") + 
+    facet_grid(~Chr, scales = 'free_x', space = 'free_x', switch = 'x') + 
+    theme_classic() + 
+    theme(axis.text.x = element_blank(),axis.ticks.x = element_blank(),
+          strip.background = element_rect(colour = "white", fill = "grey"),panel.spacing = unit(0, "lines")) + scale_x_continuous(expand = c(0.1, 0.1)) + 
+    xlab("Chromosome") + 
+    ggtitle("Significant genes without any correction") + 
+    theme(plot.title = element_text(hjust = 0.5)) + 
+    labs(fill="Panel") + 
+    geom_text(data=hits,aes(x=number,y=-log10(SUM_CADD_SC),label=lab),vjust=0,hjust=0,angle=45,size=2.5)
+
+
+hits data.frame:
+Chr                                     "1"                                      
+Start                                   "150705521"                              
+End                                     "150737239"                              
+Gene_ID                                 "CTSS”                      
+SUM_CADD_SC                             "4.788934e-42" 
+logP                                    "41.31976"                               
+Panel                                   "NEU"                                    
+number                                  "12”  ##numbered by coordinate of genes                                    
+lab                                     "CTSS” 
