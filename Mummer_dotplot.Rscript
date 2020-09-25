@@ -1,0 +1,29 @@
+#Run MUMmer 
+Ref=$1
+Query=$2
+Output=$Ref-$Query
+module load bioinfo-tools MUMmer/3.22 gnuplot/5.0.7
+rm -f out.delta out.coords
+/sw/apps/bioinfo/MUMmer/3.22/rackham/nucmer --coords $Ref $Query
+mv out.delta $Output.delta
+mv out.coords $Output.coords
+/sw/apps/bioinfo/MUMmer/3.22/rackham/delta-filter $Output.delta >$Output.filter.m
+/sw/apps/bioinfo/MUMmer/3.22/rackham/mummerplot --x11 --large --layout $Output.filter.m
+sed '1,5d' $Output.coords  | awk '{OFS="\t";print $1,$2,$4,$5,$10,$12,$13}' >$Output.simplified.coord 
+
+
+tmp<-read.table("simplified.coord")
+tmp$size <- abs(tmp[,2]-tmp[,1])
+tmp_1kb_match<-tmp[(tmp[,2]-tmp[,1]>=1000),] #Select alignemnts larger than one 1kb
+dim(tmp_1kb_match)
+tmp_1kb_match[1,]
+x_lim=c(1,max(tmp_1kb_match[,1:2]))
+y_lim=c(1,max(tmp_1kb_match[,3:4]))
+rbPal <- colorRampPalette(c('blue','red'))
+col<-rbPal(10)[as.numeric(cut(tmp_1kb_match[,5],breaks=10))]
+plot(1,1,ylim=y_lim,xlim=x_lim,type="n",xlab="scf149 (males=Het. & females=Hom.)",ylab="chr8")
+for(r in 1:nrow(tmp_1kb_match))
+{
+  segments(x0=tmp_1kb_match[r,1],x1=tmp_1kb_match[r,2],y0=tmp_1kb_match[r,3],y=tmp_1kb_match[r,4],
+           col=col[r],lwd=5)
+}
