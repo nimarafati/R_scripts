@@ -1,15 +1,15 @@
 #Run MUMmer 
-Ref=$1
-Query=$2
-Output=$Ref-$Query
-module load bioinfo-tools MUMmer/3.22 gnuplot/5.0.7
-rm -f out.delta out.coords
-/sw/apps/bioinfo/MUMmer/3.22/rackham/nucmer --coords $Ref $Query
-mv out.delta $Output.delta
-mv out.coords $Output.coords
-/sw/apps/bioinfo/MUMmer/3.22/rackham/delta-filter $Output.delta >$Output.filter.m
-/sw/apps/bioinfo/MUMmer/3.22/rackham/mummerplot --x11 --large --layout $Output.filter.m
-sed '1,5d' $Output.coords  | awk '{OFS="\t";print $1,$2,$4,$5,$10,$12,$13}' >$Output.simplified.coord 
+#Ref=$1
+#Query=$2
+#Output=$Ref-$Query
+#module load bioinfo-tools MUMmer/3.22 gnuplot/5.0.7
+#rm -f out.delta out.coords
+#/sw/apps/bioinfo/MUMmer/3.22/rackham/nucmer --coords $Ref $Query
+#mv out.delta $Output.delta
+#mv out.coords $Output.coords
+#/sw/apps/bioinfo/MUMmer/3.22/rackham/delta-filter $Output.delta >$Output.filter.m
+#/sw/apps/bioinfo/MUMmer/3.22/rackham/mummerplot --x11 --large --layout $Output.filter.m
+#sed '1,5d' $Output.coords  | awk '{OFS="\t";print $1,$2,$4,$5,$10,$12,$13}' >$Output.simplified.coord 
 
 
 tmp<-read.table("simplified.coord")
