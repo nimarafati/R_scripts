@@ -1,0 +1,40 @@
+gff=read.table("scf218.gff")
+colnames(gff)=c("Chr","Source","Feature","Start","End","Score","Strand","Frame","attribute")
+
+pos_s=70; #start position to plot gene (Y-axis)
+pos_e=120 #end position to plot gene (Y-axis)
+iter=round((pos_e-pos_s)/5,0) #define distance between consecutive genes (Y-axis)
+pos_s_iter=pos_s
+cntr=1
+
+for(i in 1:nrow(gff))
+{
+  if(gff$Feature[i]=="gene")
+  {
+    print(pos_s_iter)
+    print(cntr)
+    x=gff$Attribute[i]
+    gene_name=sub("ID.*Name=",x,replacement = "")
+    if(gff$Strand[i]=="+")
+    {
+      arrows(x0=gff$Start[i],y0=pos_s_iter,x1=gff$End[i],y1=pos_s_iter,angle = 0.5,lwd=2)
+      text(x=gff$Start[i]+(gff$End[i]-gff$Start[i])/2,labels = gene_name,y=5+pos_s_iter,cex=0.7,font=4)
+    }
+    if(gff$Strand[i]=="-")
+    {
+      arrows(x1=gff$Start[i],y0=pos_s_iter,x0=gff$End[i],y1=pos_s_iter,angle = 0.5,lwd=2)
+      text(x=gff$Start[i]+(gff$End[i]-gff$Start[i])/2,labels = gene_name,y=5+pos_s_iter,cex=0.7,font=4)
+    }
+    if(cntr<=5)
+    {
+      pos_s_iter=pos_s_iter+iter; 
+      cntr=cntr+1
+    }
+    if(cntr==6)
+    {
+      pos_s_iter=pos_s
+      cntr=1
+    }
+
+  }
+}
