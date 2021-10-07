@@ -1,0 +1,37 @@
+df <- data.frame(chr = rep(1,100), pos = sort(round(runif(100,min = 1,max = 10000))), value = (runif(100,min = 0,max = 1)))
+chr <- 1
+window <- 1000
+nVariant <- 10
+my_window <- Calculate_mean_non_overlapping_window(data = df, chr = chr, window = window, nVariant = nVariant)
+
+Calculate_mean_non_overlapping_window<-function(data,chr,window, nVariant)
+{
+  window_mean <- data.frame(Chr = chr, start = 0, end = 0, nvariant = 0, window_mean = -1 )[FALSE,]
+  cntr <- 1
+  tmp<-data[which(data$chr==chr),]
+  tmp_end <- tmp$pos[nrow(tmp)]
+  window_range <- c(1,seq(window,tmp_end,by=window))
+  for(n in window_range){
+    if(cntr ==1){
+      now_window <- tmp[(tmp$pos >= 1 & tmp$pos < window),]
+      prev_pos <- window
+      if(nrow(now_window) >= nVariant){
+        window_mean[nrow(window_mean) + 1, ] <- c(chr, 1, window, nrow(now_window), mean(now_window$value))
+      }else{
+        window_mean[nrow(window_mean) + 1, ] <- c(chr, 1, window, nrow(now_window), NA)
+      }
+
+    }else{
+      now_window <- tmp[(tmp$pos >= prev_pos & tmp$pos < prev_pos + window),]
+      
+      if(nrow(now_window) >= nVariant){
+        window_mean[nrow(window_mean) + 1, ] <- c(chr, prev_pos, prev_pos + window , nrow(now_window), mean(now_window$value))
+      }else{
+        window_mean[nrow(window_mean) + 1, ] <- c(chr, prev_pos, prev_pos + window , nrow(now_window), NA)
+      }      
+      prev_pos <- prev_pos + window
+    }
+    cntr <- cntr + 1
+  }
+  return(window_mean)
+}
