@@ -1,5 +1,4 @@
-Calculate_mean_non_overlapping_window<-function(data,chr,window, nVariant)
-{
+Calculate_mean_non_overlapping_window<-function(data,chr,window, nVariant){
   window_mean <- data.frame(Chr = chr, start = 0, end = 0, nvariant = 0, window_mean = -1 )[FALSE,]
   cntr <- 1
   tmp<-data[which(data$chr==chr),]
