@@ -9,9 +9,9 @@ Calculate_mean_non_overlapping_window<-function(data,chr,window, nVariant){
       now_window <- tmp[(tmp$pos >= 1 & tmp$pos < window),]
       prev_pos <- window
       if(nrow(now_window) >= nVariant){
-        window_mean[nrow(window_mean) + 1, ] <- c(chr, 1, window, nrow(now_window), mean(now_window$value))
+        window_mean[nrow(window_mean) + 1, ] <- c(chr, 0, window, nrow(now_window), mean(now_window$value))
       }else{
-        window_mean[nrow(window_mean) + 1, ] <- c(chr, 1, window, nrow(now_window), NA)
+        window_mean[nrow(window_mean) + 1, ] <- c(chr, 0, window, nrow(now_window), NA)
       }
 
     }else{
@@ -26,13 +26,23 @@ Calculate_mean_non_overlapping_window<-function(data,chr,window, nVariant){
     }
     cntr <- cntr + 1
   }
+  # Replacing last query coordinate
+  window_mean[nrow(window_mean), 'end'] <- tail(tmp$pos, 1)
   return(window_mean)
 }
 
 
 df <- data.frame(chr = rep(1,100), pos = sort(round(runif(100,min = 1,max = 10000))), value = (runif(100,min = 0,max = 1)))
-chr <- 1
+df <- rbind.data.frame(df, data.frame(chr = rep(2,100), pos = sort(round(runif(100,min = 1,max = 10000))), value = (runif(100,min = 0,max = 1))))
+
 window <- 1000
 nVariant <- 10
-my_window <- Calculate_mean_non_overlapping_window(data = df, chr = chr, window = window, nVariant = nVariant)
+# Loop through your dataframe by chromosome
+# The following will create a list
+my_window <- lapply(unique(df$chr), function(x) { Calculate_mean_non_overlapping_window(data = df, chr = x, window = window, nVariant = nVariant)})
+# You can convert your list to data.frame
+final_output <- do.call(rbind.data.frame, my_window)
+
+
+
 
